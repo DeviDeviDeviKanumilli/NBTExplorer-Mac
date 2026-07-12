@@ -44,7 +44,7 @@ The project produces an `osx-arm64` app bundle and includes the managed Substrat
 build, clear inherited file metadata and sign the nested native libraries before opening the app:
 
 ```sh
-xattr -cr .
+xattr -cr bin/Release/net10.0-macos/osx-arm64/NBTExplorer.app
 scripts/sign-macos-app.sh bin/Release/net10.0-macos/osx-arm64/NBTExplorer.app
 open bin/Release/net10.0-macos/osx-arm64/NBTExplorer.app
 ```
@@ -55,6 +55,9 @@ entitlements.
 The build was verified to produce an arm64 Mach-O executable with the application resources, native nib files, icon, and
 `Substrate.dll` embedded in the app bundle. The Intel Mac target (`osx-x64`) is not included yet, but the managed code
 is not architecture-specific and can be added as a second runtime target.
+
+The macOS port also updates the legacy Cocoa constructors to modern `NativeHandle` constructors and explicitly starts the
+AppKit delegate/window. This is required for the nib-based UI to instantiate correctly on current .NET macOS runtimes.
 
 The Windows version of NBTExplorer can still be used if the Mac version does not work.  You will need to install the
 Mono runtime, and then run NBTExplorer with Mono from the command line.

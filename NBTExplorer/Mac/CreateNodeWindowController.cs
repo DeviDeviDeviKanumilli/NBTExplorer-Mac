@@ -1,3 +1,4 @@
+using ObjCRuntime;
 
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace NBTExplorer.Mac
 		#region Constructors
 		
 		// Called when created from unmanaged code
-		public CreateNodeWindowController (IntPtr handle) : base (handle)
+		public CreateNodeWindowController (NativeHandle handle) : base (handle)
 		{
 			Initialize ();
 		}

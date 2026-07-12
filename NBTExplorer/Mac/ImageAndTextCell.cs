@@ -16,7 +16,7 @@ namespace NBTExplorer.Mac
 			Initialize();
 		}
 
-		public ImageAndTextCell (IntPtr handle) : base(handle)
+		public ImageAndTextCell (NativeHandle handle) : base(handle)
 		{
 			Initialize();
 		}

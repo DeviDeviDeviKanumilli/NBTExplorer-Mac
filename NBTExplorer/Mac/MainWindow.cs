@@ -1,3 +1,4 @@
+using ObjCRuntime;
 
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace NBTExplorer
 		#region Constructors
 		
 		// Called when created from unmanaged code
-		public MainWindow (IntPtr handle) : base (handle)
+		public MainWindow (NativeHandle handle) : base (handle)
 		{
 			Initialize ();
 		}
@@ -83,7 +84,8 @@ namespace NBTExplorer
 		{
 			base.AwakeFromNib ();
 
-			NSApplication.SharedApplication.MainMenu.AutoEnablesItems = false;
+			if (NSApplication.SharedApplication.MainMenu != null)
+				NSApplication.SharedApplication.MainMenu.AutoEnablesItems = false;
 
 			_dataSource = new TreeDataSource();
 			_mainOutlineView.DataSource = _dataSource;
@@ -892,7 +894,7 @@ namespace NBTExplorer
 
 		private void UpdateUI ()
 		{
-			if (_appDelegate == null)
+			if (_appDelegate == null || _appDelegate.MenuSave == null)
 				return;
 
 			TreeDataNode selected = _mainOutlineView.ItemAtRow(_mainOutlineView.SelectedRow) as TreeDataNode;
@@ -912,7 +914,7 @@ namespace NBTExplorer
 
 		private void UpdateUI (DataNode node)
 		{
-			if (_appDelegate == null || node == null)
+			if (_appDelegate == null || node == null || _appDelegate.MenuInsertByte == null)
 				return;
 
 			_appDelegate.MenuInsertByte.Enabled = node.CanCreateTag(TagType.TAG_BYTE);

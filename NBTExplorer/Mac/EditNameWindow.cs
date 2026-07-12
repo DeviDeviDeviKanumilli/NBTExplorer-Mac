@@ -1,3 +1,4 @@
+using ObjCRuntime;
 
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace NBTExplorer.Mac
 		#region Constructors
 		
 		// Called when created from unmanaged code
-		public EditNameWindow (IntPtr handle) : base (handle)
+		public EditNameWindow (NativeHandle handle) : base (handle)
 		{
 			Initialize ();
 		}

@@ -1,3 +1,4 @@
+using ObjCRuntime;
 
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace NBTExplorer
 		#region Constructors
 		
 		// Called when created from unmanaged code
-		public MainWindowController (IntPtr handle) : base (handle)
+		public MainWindowController (NativeHandle handle) : base (handle)
 		{
 			Initialize ();
 		}
