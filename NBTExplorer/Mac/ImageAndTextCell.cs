@@ -31,6 +31,9 @@ namespace NBTExplorer.Mac
 		{
 			LineBreakMode = NSLineBreakMode.TruncatingTail;
 			Selectable = true;
+			// The legacy nib supplies a white cell text color on current macOS,
+			// which disappears against the outline's white background.
+			TextColor = NSColor.Black;
 		}
 
 		public new NSImage Image

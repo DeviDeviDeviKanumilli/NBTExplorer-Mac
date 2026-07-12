@@ -174,7 +174,11 @@ namespace NBTExplorer
 				ImageAndTextCell c = cell as ImageAndTextCell;
 				TreeDataNode node = item as TreeDataNode;
 
-				c.Title = node.CombinedName;
+			// Modern AppKit draws the cell's StringValue.  Setting only the
+			// legacy Title property leaves the unselected rows visually blank.
+			c.StringValue = node.CombinedName;
+			c.Title = node.CombinedName;
+			c.TextColor = NSColor.Black;
 				c.Image = _main._iconRegistry.Lookup(node.Data.GetType());
 				//c.StringValue = node.Name;
 				//throw new System.NotImplementedException ();
