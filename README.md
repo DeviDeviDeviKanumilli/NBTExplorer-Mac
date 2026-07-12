@@ -40,8 +40,17 @@ dotnet build NBTExplorer.MacArm64.csproj -c Release -p:CreateAppBundle=true
 open bin/Release/net10.0-macos/osx-arm64/NBTExplorer.app
 ```
 
-The project produces an `osx-arm64` app bundle and includes the managed Substrate dependency. Local builds are unsigned;
-set `EnableCodeSigning=true` and provide an Apple signing identity when creating a distributable app.
+The project produces an `osx-arm64` app bundle and includes the managed Substrate dependency. For a local ad-hoc signed
+build, clear inherited file metadata and sign the nested native libraries before opening the app:
+
+```sh
+xattr -cr .
+scripts/sign-macos-app.sh bin/Release/net10.0-macos/osx-arm64/NBTExplorer.app
+open bin/Release/net10.0-macos/osx-arm64/NBTExplorer.app
+```
+
+For distribution, replace the ad-hoc signing in the script with an Apple Developer signing identity and appropriate
+entitlements.
 
 The build was verified to produce an arm64 Mach-O executable with the application resources, native nib files, icon, and
 `Substrate.dll` embedded in the app bundle. The Intel Mac target (`osx-x64`) is not included yet, but the managed code
