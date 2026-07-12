@@ -1,5 +1,5 @@
 using System;
-using MonoMac.AppKit;
+using AppKit;
 using NBTExplorer.Model;
 using System.Collections.Generic;
 
@@ -12,6 +12,8 @@ namespace NBTExplorer.Mac
 		public SearchStateMac (NSWindow sender)
 		{
 			_sender = sender;
+			TerminateOnDiscover = true;
+			ProgressRate = 0.5f;
 		}
 		
 		public Action<DataNode> DiscoverCallback { get; set; }
@@ -24,6 +26,9 @@ namespace NBTExplorer.Mac
 		public DataNode RootNode { get; set; }
 		public string SearchName { get; set; }
 		public string SearchValue { get; set; }
+		public bool TerminateOnDiscover { get; set; }
+		public bool IsTerminated { get; set; }
+		public float ProgressRate { get; set; }
 		
 		public IEnumerator<DataNode> State { get; set; }
 		
@@ -54,8 +59,20 @@ namespace NBTExplorer.Mac
 				_sender.BeginInvokeOnMainThread(delegate { EndCallback(node); });
 			//_sender.BeginInvokeOnMainThread(EndCallback, new object[] { node });
 		}
+
+		public bool TestNode (DataNode node)
+		{
+			bool matchesName = SearchName == null;
+			bool matchesValue = SearchValue == null;
+
+			if (SearchName != null && node.NodeName != null)
+				matchesName = node.NodeName.IndexOf(SearchName, StringComparison.OrdinalIgnoreCase) >= 0;
+			if (SearchValue != null && node.NodeDisplay != null)
+				matchesValue = node.NodeDisplay.IndexOf(SearchValue, StringComparison.OrdinalIgnoreCase) >= 0;
+
+			return matchesName && matchesValue;
+		}
 		
 		#endregion
 	}
 }
-

@@ -1,0 +1,58 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-macos</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>NBTExplorer</AssemblyName>
+    <RootNamespace>NBTExplorer</RootNamespace>
+    <SupportedOSPlatformVersion>12.0</SupportedOSPlatformVersion>
+    <ApplicationTitle>NBTExplorer</ApplicationTitle>
+    <ApplicationVersion>2.8.0</ApplicationVersion>
+    <ApplicationDisplayVersion>2.8.0</ApplicationDisplayVersion>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>false</ImplicitUsings>
+    <EnableDefaultApplicationDefinition>false</EnableDefaultApplicationDefinition>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+    <RuntimeIdentifier>osx-arm64</RuntimeIdentifier>
+    <!-- Local builds are intentionally unsigned; set EnableCodeSigning=true for distribution. -->
+    <EnableCodeSigning>false</EnableCodeSigning>
+    <!-- The installed SDK can be used with the compatible Xcode minor version on this host. -->
+    <ValidateXcodeVersion>false</ValidateXcodeVersion>
+    <ApplicationId>jaquadro.nbtexplorer</ApplicationId>
+    <MacOSAppBundleName>NBTExplorer</MacOSAppBundleName>
+    <MacOSAppBundleDisplayName>NBTExplorer</MacOSAppBundleDisplayName>
+    <MacOSAppBundleVersion>2.8.0</MacOSAppBundleVersion>
+    <MacOSAppBundlePackageType>APPL</MacOSAppBundlePackageType>
+    <TrimMode Condition="'$(Configuration)' == 'Release'">partial</TrimMode>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="Substrate">
+      <HintPath>References/Substrate.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="NBTExplorer/ProgramMac.cs" />
+    <Compile Include="NBTExplorer/SearchWorker.cs" />
+    <Compile Include="NBTExplorer/Mac/**/*.cs" Exclude="NBTExplorer/Mac/Scratch.cs" />
+    <Compile Include="NBTModel/**/*.cs" Exclude="NBTModel/Properties/AssemblyInfo.cs" LinkBase="NBTModel" />
+    <Compile Remove="NBTExplorer/Properties/AssemblyInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="NBTExplorer/Info.plist">
+      <Link>Info.plist</Link>
+    </None>
+    <BundleResource Include="NBTExplorer/nbte.icns">
+      <Link>nbte.icns</Link>
+    </BundleResource>
+    <BundleResource Include="NBTExplorer/Resources/**/*.png">
+      <Link>%(Filename)%(Extension)</Link>
+    </BundleResource>
+    <InterfaceDefinition Include="NBTExplorer/Mac/**/*.xib">
+      <Link>%(Filename)%(Extension)</Link>
+    </InterfaceDefinition>
+  </ItemGroup>
+</Project>

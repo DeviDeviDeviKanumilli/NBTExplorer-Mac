@@ -2,14 +2,14 @@ using System;
 
 namespace NBTExplorer.Mac.Test
 {
-	public partial class MainWindow : MonoMac.AppKit.NSWindow
+	public partial class MainWindow : AppKit.NSWindow
 	{
 		// ...
 
 
 
 		[Outlet]
-		MonoMac.AppKit.NSOutlineView _mainOutlineView { get; set; }
+		AppKit.NSOutlineView _mainOutlineView { get; set; }
 		
 		private TreeDataSource _dataSource;
 		

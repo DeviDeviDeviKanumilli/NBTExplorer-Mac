@@ -1,5 +1,5 @@
 using System;
-using MonoMac.AppKit;
+using AppKit;
 
 namespace NBTExplorer.Mac
 {
@@ -19,7 +19,7 @@ namespace NBTExplorer.Mac
 		private static ModalResult RunWindow (NSWindowController controller)
 		{
 			//NSApplication.SharedApplication.BeginSheet (controller.Window, NSApplication.SharedApplication.MainWindow);
-			int response = NSApplication.SharedApplication.RunModalForWindow (controller.Window);
+			int response = (int)NSApplication.SharedApplication.RunModalForWindow (controller.Window);
 			
 			//NSApplication.SharedApplication.EndSheet(controller.Window);
 			controller.Window.Close();
@@ -107,4 +107,3 @@ namespace NBTExplorer.Mac
 		}
 	}
 }
-

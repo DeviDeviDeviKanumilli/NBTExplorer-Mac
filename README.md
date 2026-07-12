@@ -26,8 +26,26 @@ Minimally, your system needs the `mono-core` and `mono-winforms` packages, or wh
 
 ### Mac
 
-A separate Mac version with a native UI is available.  All Mono dependencies are included within the app package.
-Minimum supported OS is OSX 10.8 Mountain Lion, but it may run on versions as early as Snow Leopard.
+A native Mac version is available. The new Mac target replaces the original MonoMac/.NET 2.0 build, which depended on
+obsolete tooling and stale project paths. It uses modern .NET for macOS and AppKit and is currently configured for
+Apple Silicon (`osx-arm64`).
+
+It requires macOS 12 or later, an arm64 .NET 10 SDK, the macOS workload, and Xcode command-line tools.
+
+From the repository root:
+
+```sh
+dotnet workload install macos
+dotnet build NBTExplorer.MacArm64.csproj -c Release -p:CreateAppBundle=true
+open bin/Release/net10.0-macos/osx-arm64/NBTExplorer.app
+```
+
+The project produces an `osx-arm64` app bundle and includes the managed Substrate dependency. Local builds are unsigned;
+set `EnableCodeSigning=true` and provide an Apple signing identity when creating a distributable app.
+
+The build was verified to produce an arm64 Mach-O executable with the application resources, native nib files, icon, and
+`Substrate.dll` embedded in the app bundle. The Intel Mac target (`osx-x64`) is not included yet, but the managed code
+is not architecture-specific and can be added as a second runtime target.
 
 The Windows version of NBTExplorer can still be used if the Mac version does not work.  You will need to install the
 Mono runtime, and then run NBTExplorer with Mono from the command line.
