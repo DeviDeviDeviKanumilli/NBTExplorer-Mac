@@ -26,9 +26,10 @@ Minimally, your system needs the `mono-core` and `mono-winforms` packages, or wh
 
 ### Mac
 
-A native Mac version is available. The new Mac target replaces the original MonoMac/.NET 2.0 build, which depended on
-obsolete tooling and stale project paths. It uses modern .NET for macOS and AppKit and is currently configured for
-Apple Silicon (`osx-arm64`).
+A native Apple Silicon version is available. `NBTExplorer.MacArm64.csproj` replaces the original MonoMac/.NET 2.0 Mac
+build with modern .NET for macOS and AppKit. The active Mac target is ARM64-only (`osx-arm64`); it does not produce an
+Intel Mac binary. The legacy Windows/x86 and MonoMac projects remain in the repository for reference, but none of their
+WinForms, Windows interop, or old MonoMac files are compiled into the Apple Silicon app.
 
 It requires macOS 12 or later, an arm64 .NET 10 SDK, the macOS workload, and Xcode command-line tools.
 
@@ -40,8 +41,8 @@ dotnet build NBTExplorer.MacArm64.csproj -c Release -p:CreateAppBundle=true
 open bin/Release/net10.0-macos/osx-arm64/NBTExplorer.app
 ```
 
-The project produces an `osx-arm64` app bundle and includes the managed Substrate dependency. For a local ad-hoc signed
-build, clear inherited file metadata and sign the nested native libraries before opening the app:
+The project produces an `osx-arm64` app bundle and includes the managed, architecture-neutral Substrate dependency. For
+a local ad-hoc signed build, clear inherited file metadata and sign the nested native libraries before opening the app:
 
 ```sh
 xattr -cr bin/Release/net10.0-macos/osx-arm64/NBTExplorer.app
@@ -52,12 +53,34 @@ open bin/Release/net10.0-macos/osx-arm64/NBTExplorer.app
 For distribution, replace the ad-hoc signing in the script with an Apple Developer signing identity and appropriate
 entitlements.
 
-The build was verified to produce an arm64 Mach-O executable with the application resources, native nib files, icon, and
-`Substrate.dll` embedded in the app bundle. The Intel Mac target (`osx-x64`) is not included yet, but the managed code
-is not architecture-specific and can be added as a second runtime target.
+The Release build has been verified as an ARM64 Mach-O executable with the application resources, native nib files, icon,
+and `Substrate.dll` embedded in the app bundle. Ad-hoc signature verification also passes. The Intel Mac target
+(`osx-x64`) is not included; adding it would require a separate runtime build and testing on Intel hardware.
 
-The macOS port also updates the legacy Cocoa constructors to modern `NativeHandle` constructors and explicitly starts the
-AppKit delegate/window. This is required for the nib-based UI to instantiate correctly on current .NET macOS runtimes.
+#### Apple Silicon migration notes
+
+The macOS audit and migration addressed the following issues:
+
+* duplicate AppKit delegate initialization no longer opens two windows;
+* the outline uses native, clickable disclosure chevrons and readable system text colors;
+* tree delegates are retained correctly, rows have native spacing and alternating backgrounds, and every supported array
+  tag has a visible icon;
+* direct file arguments work, including paths containing spaces, and unsupported paths now report an error instead of
+  leaving a blank window;
+* modern `NSAlert` and `NSOpenPanel` APIs replace obsolete MonoMac calls, including correct unsaved-change confirmation;
+* list edits correctly mark files as modified, clipboard corruption is handled safely, and inaccessible macOS folders no
+  longer crash browsing;
+* Find respects the Name and Value controls, safely completes background searches, and clears stale Find Next state;
+* reflection-based tag construction was replaced with direct construction so Release trimming is predictable on ARM64.
+
+The bundled `Substrate.dll` is an older managed .NET Framework assembly. Some file tools label managed assemblies as
+PE32/x86 because of their container format, but it does not contain native x86 machine code and runs inside the ARM64 .NET
+process. Release builds may report linker warning `IL2104` for its legacy metadata; the signed Release app was runtime-tested
+without the Debug resolver messages. Replacing it with the full upstream source would add a large legacy world-editing and
+Windows drawing surface that NBTExplorer does not use, so this fork keeps the small managed dependency.
+
+Current Mac limitation: byte/short/int/long array values can be browsed, but the legacy hex-array editor has not been
+ported to AppKit.
 
 The Windows version of NBTExplorer can still be used if the Mac version does not work.  You will need to install the
 Mono runtime, and then run NBTExplorer with Mono from the command line.
