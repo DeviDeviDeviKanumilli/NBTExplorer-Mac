@@ -1,14 +1,14 @@
 using System;
-using System.Drawing;
 using Foundation;
 using AppKit;
-using ObjCRuntime;
 
 namespace NBTExplorer
 {
 	public partial class AppDelegate : NSApplicationDelegate
 	{
-		MainWindowController mainWindowController;
+		// MainMenu.xib can create a second AppDelegate after Program has already
+		// attached one. Sharing the controller keeps both delegates on one window.
+		static MainWindowController mainWindowController;
 		
 		public AppDelegate ()
 		{
@@ -24,10 +24,9 @@ namespace NBTExplorer
 			if (mainWindowController == null)
 				mainWindowController = new MainWindowController ();
 
-			NSApplication.SharedApplication.ActivateIgnoringOtherApps (true);
-			mainWindowController.Window.MakeKeyAndOrderFront (this);
-			mainWindowController.Window.OrderFrontRegardless ();
 			mainWindowController.Window.AppDelegate = this;
+			mainWindowController.ShowWindow (this);
+			mainWindowController.Window.MakeKeyAndOrderFront (this);
 		}
 
 		public override bool ApplicationShouldTerminateAfterLastWindowClosed (NSApplication sender)

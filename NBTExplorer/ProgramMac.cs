@@ -15,9 +15,8 @@ namespace NBTExplorer
         static void Main (string[] args)
         {
 			NSApplication.Init ();
-			// Modern .NET for macOS does not always infer the delegate from the
-			// legacy MainMenu.xib. Attach it explicitly before entering AppKit's
-			// event loop so the main window is created at launch.
+			// Attach a delegate before entering AppKit because this legacy nib is
+			// not reliably inferred by modern .NET for macOS.
 			AppDelegate appDelegate = new AppDelegate ();
 			NSApplication.SharedApplication.Delegate = appDelegate;
 			appDelegate.ShowMainWindow ();
