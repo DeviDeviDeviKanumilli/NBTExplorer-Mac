@@ -57,19 +57,29 @@ namespace NBTExplorer.Model
 
         protected override void ExpandCore ()
         {
-            foreach (string dirpath in Directory.GetDirectories(_path)) {
-                Nodes.Add(new DirectoryDataNode(dirpath));
-            }
-
-            foreach (string filepath in Directory.GetFiles(_path)) {
-                DataNode node = null;
-                foreach (var item in FileTypeRegistry.RegisteredTypes) {
-                    if (item.Value.NamePatternTest(filepath))
-                        node = item.Value.NodeCreate(filepath);
+            try {
+                foreach (string dirpath in Directory.GetDirectories(_path)) {
+                    Nodes.Add(new DirectoryDataNode(dirpath));
                 }
 
-                if (node != null)
-                    Nodes.Add(node);
+                foreach (string filepath in Directory.GetFiles(_path)) {
+                    DataNode node = null;
+                    foreach (var item in FileTypeRegistry.RegisteredTypes) {
+                        if (item.Value.NamePatternTest(filepath)) {
+                            node = item.Value.NodeCreate(filepath);
+                            break;
+                        }
+                    }
+
+                    if (node != null)
+                        Nodes.Add(node);
+                }
+            }
+            catch (UnauthorizedAccessException) {
+                // macOS commonly denies access to privacy-protected folders.
+            }
+            catch (IOException) {
+                // The directory may disappear while it is being enumerated.
             }
         }
 

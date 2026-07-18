@@ -346,10 +346,11 @@ namespace NBTExplorer
 
 		private void OpenPaths (IEnumerable<string> paths)
 		{
+			string[] requestedPaths = paths.ToArray();
 			_dataSource.Nodes.Clear ();
 			_mainOutlineView.ReloadData ();
 
-			foreach (string path in paths) {
+			foreach (string path in requestedPaths) {
 				if (Directory.Exists (path)) {
 					DirectoryDataNode node = new DirectoryDataNode (path);
 					_dataSource.Nodes.Add (new TreeDataNode (node));
@@ -374,6 +375,8 @@ namespace NBTExplorer
 
 			if (_dataSource.Nodes.Count > 0)
 				_mainOutlineView.ExpandItem(_dataSource.Nodes[0]);
+			else if (requestedPaths.Length > 0)
+				FormHandlers.ShowAlert("Open Failed", "No supported NBT files or directories were found.");
 
 			UpdateUI();
 		}
@@ -743,8 +746,8 @@ namespace NBTExplorer
 
 			_searchState = new SearchStateMac(this) {
 				RootNode = node.Data,
-				SearchName = form.NameToken,
-				SearchValue = form.ValueToken,
+				SearchName = form.MatchName ? form.NameToken : null,
+				SearchValue = form.MatchValue ? form.ValueToken : null,
 				DiscoverCallback = SearchDiscoveryCallback,
 				CollapseCallback = SearchCollapseCallback,
 				EndCallback = SearchEndCallback,
@@ -775,9 +778,10 @@ namespace NBTExplorer
 		
 		private void SearchDiscoveryCallback (DataNode node)
 		{
-			Console.WriteLine ("Discovery: " + node.NodeDisplay);
 			TreeDataNode frontNode = FindFrontNode(node);
-			Console.WriteLine ("  Front Node: " + frontNode.Data.NodeDisplay);
+			if (frontNode == null)
+				return;
+
 			_mainOutlineView.SelectRow (_mainOutlineView.RowForItem(frontNode), false);
 			_mainOutlineView.ScrollRowToVisible(_mainOutlineView.RowForItem(frontNode));
 			//_nodeTree.SelectedNode = FindFrontNode(node);
@@ -795,9 +799,13 @@ namespace NBTExplorer
 		
 		private void SearchEndCallback (DataNode node)
 		{
-			_searchForm.Cancel();
-			_searchForm = null;
+			if (_searchForm != null) {
+				_searchForm.Cancel();
+				_searchForm = null;
+			}
 
+			_searchState = null;
+			UpdateUI();
 			FormHandlers.ShowAlert("End of Results");
 		}
 		

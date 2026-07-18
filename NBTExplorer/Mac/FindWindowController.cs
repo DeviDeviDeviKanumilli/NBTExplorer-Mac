@@ -66,8 +66,20 @@ namespace NBTExplorer.Mac
 			get { return _valueField.StringValue; }
 		}
 
+		public override void WindowDidLoad ()
+		{
+			base.WindowDidLoad();
+			_nameField.Changed += delegate { _nameToggle.State = NSCellStateValue.On; };
+			_valueField.Changed += delegate { _valueToggle.State = NSCellStateValue.On; };
+		}
+
 		partial void ActionFind (NSObject sender)
 		{
+			if (!MatchName && !MatchValue) {
+				FormHandlers.ShowAlert("Nothing to Find", "Select Name or Value before searching.");
+				return;
+			}
+
 			NSApplication.SharedApplication.StopModalWithCode((int)ModalResult.OK);
 		}
 
@@ -77,4 +89,3 @@ namespace NBTExplorer.Mac
 		}
 	}
 }
-
