@@ -282,7 +282,7 @@ namespace NBTExplorer
 
 		private void OpenFolder ()
 		{
-			NSOpenPanel opanel = new NSOpenPanel ();
+			NSOpenPanel opanel = NSOpenPanel.OpenPanel;
 			opanel.CanChooseDirectories = true;
 			opanel.CanChooseFiles = false;
 
@@ -299,7 +299,7 @@ namespace NBTExplorer
 
 		private void OpenFile ()
 		{
-			NSOpenPanel opanel = new NSOpenPanel ();
+			NSOpenPanel opanel = NSOpenPanel.OpenPanel;
 			opanel.CanChooseDirectories = false;
 			opanel.CanChooseFiles = true;
 			//opanel.AllowsMultipleSelection = true;
@@ -328,7 +328,7 @@ namespace NBTExplorer
 				OpenPaths(new string[] { path });
 			}
 			catch (Exception e) {
-				NSAlert.WithMessage("Operation Failed", "OK", null, null, "Could not open default Minecraft save directory").RunModal();
+				FormHandlers.ShowAlert("Operation Failed", "Could not open default Minecraft save directory");
 				Console.WriteLine(e.Message);
 				
 				try {
@@ -798,7 +798,7 @@ namespace NBTExplorer
 			_searchForm.Cancel();
 			_searchForm = null;
 
-			NSAlert.WithMessage("End of Results", "OK", null, null, "").RunModal();
+			FormHandlers.ShowAlert("End of Results");
 		}
 		
 		private TreeDataNode GetRootFromDataNodePath (DataNode node, out Stack<DataNode> hierarchy)
@@ -875,8 +875,7 @@ namespace NBTExplorer
 		private bool ConfirmExit ()
 		{
 			if (CheckModifications()) {
-				int id = (int)NSAlert.WithMessage("Unsaved Changes", "OK", "Cancel", "", "You currently have unsaved changes.  Close anyway?").RunModal();
-				if (id != 1)
+				if (!FormHandlers.Confirm("Unsaved Changes", "You currently have unsaved changes. Close anyway?"))
 					return false;
 			}
 			
@@ -886,8 +885,7 @@ namespace NBTExplorer
 		private bool ConfirmOpen ()
 		{
 			if (CheckModifications()) {
-				int id = (int)NSAlert.WithMessage("Unsaved Changes", "OK", "Cancel", "", "You currently have unsaved changes.  Open new location anyway?").RunModal();
-				if (id != 1)
+				if (!FormHandlers.Confirm("Unsaved Changes", "You currently have unsaved changes. Open a new location anyway?"))
 					return false;
 			}
 			

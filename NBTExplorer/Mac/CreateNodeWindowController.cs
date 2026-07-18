@@ -184,7 +184,7 @@ namespace NBTExplorer.Mac
 			string text = _nameField.StringValue.Trim();
 
 			if (_invalidNames.Contains(text)) {
-				NSAlert.WithMessage("Duplicate name.", "OK", null, null, "You cannot specify a name already in use by another tag within the same container.").RunModal();
+				FormHandlers.ShowAlert("Duplicate name.", "You cannot specify a name already in use by another tag within the same container.");
 				return false;
 			}
 			
@@ -198,7 +198,7 @@ namespace NBTExplorer.Mac
 				return true;
 			
 			if (!Int32.TryParse(_sizeField.StringValue.Trim(), out _size)) {
-				NSAlert.WithMessage("Invalid size.", "OK", null, null, "The size field must be a valid integer value.").RunModal();
+				FormHandlers.ShowAlert("Invalid size.", "The size field must be a valid integer value.");
 				return false;
 			}
 			
@@ -231,4 +231,3 @@ namespace NBTExplorer.Mac
 		}
 	}
 }
-

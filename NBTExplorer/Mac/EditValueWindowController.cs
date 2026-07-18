@@ -114,11 +114,11 @@ namespace NBTExplorer.Mac
 				}
 			}
 			catch (FormatException) {
-				NSAlert.WithMessage("Invalid Format", "OK", null, null, "The value is formatted incorrectly for the given type.").RunModal();
+				FormHandlers.ShowAlert("Invalid Format", "The value is formatted incorrectly for the given type.");
 				return false;
 			}
 			catch (OverflowException) {
-				NSAlert.WithMessage("Invalid Range", "OK", null, null, "The value is outside the acceptable range for the given type.").RunModal();
+				FormHandlers.ShowAlert("Invalid Range", "The value is outside the acceptable range for the given type.");
 				return false;
 			}
 			catch {
@@ -139,4 +139,3 @@ namespace NBTExplorer.Mac
 		}
 	}
 }
-

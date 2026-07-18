@@ -96,7 +96,7 @@ namespace NBTExplorer.Mac
 			string text = _textField.StringValue.Trim();
 			
 			if (text != _originalName && _invalidNames.Contains(text)) {
-				NSAlert.WithMessage("Duplicate name provided.", "OK", null, null, "Duplicate name provided.").RunModal();
+				FormHandlers.ShowAlert("Duplicate name provided.", "Duplicate name provided.");
 				return false;
 			}
 
@@ -123,4 +123,3 @@ namespace NBTExplorer.Mac
 		}
 	}
 }
-

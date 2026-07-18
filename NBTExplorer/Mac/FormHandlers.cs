@@ -5,6 +5,25 @@ namespace NBTExplorer.Mac
 {
 	public static class FormHandlers
 	{
+		public static nint ShowAlert (string title, string informativeText = "", params string[] buttons)
+		{
+			using NSAlert alert = new NSAlert {
+				MessageText = title,
+				InformativeText = informativeText ?? "",
+			};
+			if (buttons.Length == 0)
+				alert.AddButton("OK");
+			else
+				foreach (string button in buttons)
+					alert.AddButton(button);
+			return (nint)alert.RunModal();
+		}
+
+		public static bool Confirm (string title, string informativeText)
+		{
+			return ShowAlert(title, informativeText, "OK", "Cancel") == (nint)NSAlertButtonReturn.First;
+		}
+
 		public static void Register ()
 		{
 			FormRegistry.EditByteArray = EditByteArrayHandler;
@@ -33,7 +52,7 @@ namespace NBTExplorer.Mac
 		
 		public static void MessageBoxHandler (string message)
 		{
-			NSAlert.WithMessage(message, "OK", null, null, "").RunModal();
+			ShowAlert(message);
 		}
 		
 		public static bool EditStringHandler (StringFormData data)
@@ -77,7 +96,7 @@ namespace NBTExplorer.Mac
 		
 		public static bool EditByteArrayHandler (ByteArrayFormData data)
 		{
-			NSAlert.WithMessage("Not supported.", "OK", null, null, "Array editing is currently not supported in the Mac version of NBTExplorer.").RunModal();
+			ShowAlert("Not supported.", "Array editing is currently not supported in the Mac version of NBTExplorer.");
 			return false;
 
 			/*HexEditor form = new HexEditor(data.NodeName, data.Data, data.BytesPerElement);
