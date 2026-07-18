@@ -50,7 +50,7 @@ namespace NBTExplorer
 		private void InitializeIconRegistry ()
 		{
 			_iconRegistry = new NBTExplorer.Mac.IconRegistry();
-			_iconRegistry.DefaultIcon = NSImage.ImageNamed("question-white.png");
+			_iconRegistry.DefaultIcon = NSImage.ImageNamed("question-frame.png");
 			
 			_iconRegistry.Register(typeof(TagByteDataNode), NSImage.ImageNamed("document-attribute-b.png"));
 			_iconRegistry.Register(typeof(TagShortDataNode), NSImage.ImageNamed("document-attribute-s.png"));
@@ -68,6 +68,8 @@ namespace NBTExplorer
 			_iconRegistry.Register(typeof(CubicRegionDataNode), NSImage.ImageNamed("block.png"));
 			_iconRegistry.Register(typeof(NbtFileDataNode), NSImage.ImageNamed("wooden-box.png"));
 			_iconRegistry.Register(typeof(TagIntArrayDataNode), NSImage.ImageNamed("edit-code-i.png"));
+			_iconRegistry.Register(typeof(TagLongArrayDataNode), NSImage.ImageNamed("edit-code-l.png"));
+			_iconRegistry.Register(typeof(TagShortArrayDataNode), NSImage.ImageNamed("edit-code-s.png"));
 		}
 
 		public AppDelegate AppDelegate

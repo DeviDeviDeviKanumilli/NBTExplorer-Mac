@@ -61,7 +61,7 @@ namespace NBTExplorer.Model
             get { return _nodes[index]; }
             set
             {
-                if (index < 0 || index > _nodes.Count)
+                if (index < 0 || index >= _nodes.Count)
                     throw new ArgumentOutOfRangeException("index");
                 if (value == null)
                     throw new ArgumentNullException("item");
@@ -119,11 +119,11 @@ namespace NBTExplorer.Model
 
         public bool Remove (DataNode item)
         {
-            if (_nodes.Contains(item))
-                item.Parent = null;
+            if (!_nodes.Contains(item))
+                return false;
 
+			item.Parent = null;
             _changeCount++;
-
             return _nodes.Remove(item);
         }
 

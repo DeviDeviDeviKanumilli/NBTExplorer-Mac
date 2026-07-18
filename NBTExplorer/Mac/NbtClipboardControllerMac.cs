@@ -29,8 +29,13 @@ namespace NBTExplorer.Mac
 			if (data == null)
 				return null;
 
-			TagNode node = NbtClipboardData.DeserializeNode(data.ToArray());
-			return node == null ? null : new NbtClipboardData(pasteboard.GetStringForType(NameType), node);
+			try {
+				TagNode node = NbtClipboardData.DeserializeNode(data.ToArray());
+				return node == null ? null : new NbtClipboardData(pasteboard.GetStringForType(NameType), node);
+			}
+			catch {
+				return null;
+			}
 		}
 
 		public bool ContainsData
