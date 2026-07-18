@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using NBTModel.Interop;
 using Substrate.Nbt;
 
@@ -81,32 +80,27 @@ namespace NBTExplorer.Model
             }
         }
 
-        private static Dictionary<TagType, Type> _tagRegistry;
-
-        static TagDataNode ()
-        {
-            _tagRegistry = new Dictionary<TagType, Type>();
-            _tagRegistry[TagType.TAG_BYTE] = typeof(TagByteDataNode);
-            _tagRegistry[TagType.TAG_BYTE_ARRAY] = typeof(TagByteArrayDataNode);
-            _tagRegistry[TagType.TAG_COMPOUND] = typeof(TagCompoundDataNode);
-            _tagRegistry[TagType.TAG_DOUBLE] = typeof(TagDoubleDataNode);
-            _tagRegistry[TagType.TAG_FLOAT] = typeof(TagFloatDataNode);
-            _tagRegistry[TagType.TAG_INT] = typeof(TagIntDataNode);
-            _tagRegistry[TagType.TAG_INT_ARRAY] = typeof(TagIntArrayDataNode);
-            _tagRegistry[TagType.TAG_LIST] = typeof(TagListDataNode);
-            _tagRegistry[TagType.TAG_LONG] = typeof(TagLongDataNode);
-            _tagRegistry[TagType.TAG_LONG_ARRAY] = typeof(TagLongArrayDataNode);
-            _tagRegistry[TagType.TAG_SHORT] = typeof(TagShortDataNode);
-            _tagRegistry[TagType.TAG_SHORT_ARRAY] = typeof(TagShortArrayDataNode);
-            _tagRegistry[TagType.TAG_STRING] = typeof(TagStringDataNode);
-        }
-
         static public TagDataNode CreateFromTag (TagNode tag)
         {
-            if (tag == null || !_tagRegistry.ContainsKey(tag.GetTagType()))
-                return null;
+			if (tag == null)
+				return null;
 
-            return Activator.CreateInstance(_tagRegistry[tag.GetTagType()], tag) as TagDataNode;
+			return tag.GetTagType() switch {
+				TagType.TAG_BYTE => new TagByteDataNode((TagNodeByte)tag),
+				TagType.TAG_BYTE_ARRAY => new TagByteArrayDataNode((TagNodeByteArray)tag),
+				TagType.TAG_COMPOUND => new TagCompoundDataNode((TagNodeCompound)tag),
+				TagType.TAG_DOUBLE => new TagDoubleDataNode((TagNodeDouble)tag),
+				TagType.TAG_FLOAT => new TagFloatDataNode((TagNodeFloat)tag),
+				TagType.TAG_INT => new TagIntDataNode((TagNodeInt)tag),
+				TagType.TAG_INT_ARRAY => new TagIntArrayDataNode((TagNodeIntArray)tag),
+				TagType.TAG_LIST => new TagListDataNode((TagNodeList)tag),
+				TagType.TAG_LONG => new TagLongDataNode((TagNodeLong)tag),
+				TagType.TAG_LONG_ARRAY => new TagLongArrayDataNode((TagNodeLongArray)tag),
+				TagType.TAG_SHORT => new TagShortDataNode((TagNodeShort)tag),
+				TagType.TAG_SHORT_ARRAY => new TagShortArrayDataNode((TagNodeShortArray)tag),
+				TagType.TAG_STRING => new TagStringDataNode((TagNodeString)tag),
+				_ => null,
+			};
         }
 
         static public TagNode DefaultTag (TagType type)

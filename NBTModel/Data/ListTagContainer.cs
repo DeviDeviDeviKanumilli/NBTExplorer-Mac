@@ -11,6 +11,7 @@ namespace NBTExplorer.Model
         public ListTagContainer (TagNodeList tag, Action<bool> modifyHandler)
         {
             _tag = tag;
+			_modifyHandler = modifyHandler;
         }
 
         public int TagCount
