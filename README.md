@@ -1,6 +1,12 @@
-# NBTExplorer
+# NBTExplorer for Mac
 
-NBTExplorer is an open-source NBT editor for all common sources of NBT data.  It's mainly intended for editing [Minecraft](http://www.minecraft.net) game data.
+This repository is an independent, open-source fork of
+[the original NBTExplorer](https://github.com/jaquadro/NBTExplorer), created by Justin Aquadro. It preserves the original
+project's NBT editing capabilities while providing a maintained native build for Apple Silicon Macs. This fork is not an
+official release of the upstream project.
+
+NBTExplorer reads and edits common Named Binary Tag (NBT) data formats, primarily for
+[Minecraft](https://www.minecraft.net/) worlds and related files.
 
 ## Supported Formats
 
@@ -82,5 +88,7 @@ Windows drawing surface that NBTExplorer does not use, so this fork keeps the sm
 Current Mac limitation: byte/short/int/long array values can be browsed, but the legacy hex-array editor has not been
 ported to AppKit.
 
-The Windows version of NBTExplorer can still be used if the Mac version does not work.  You will need to install the
-Mono runtime, and then run NBTExplorer with Mono from the command line.
+## License and attribution
+
+This fork remains available under the original project's [MIT License](LICENSE.txt). The original copyright and license
+notices are retained, and credit for the original NBTExplorer project belongs to Justin Aquadro and its contributors.
