@@ -15,6 +15,9 @@ namespace NBTExplorer
 {
 	public partial class MainWindow : AppKit.NSWindow
 	{
+		private WindowDelegate _windowDelegate;
+		private MyDelegate _outlineDelegate;
+
 		#region Constructors
 		
 		// Called when created from unmanaged code
@@ -33,7 +36,8 @@ namespace NBTExplorer
 		// Shared initialization code
 		void Initialize ()
 		{
-			Delegate = new WindowDelegate(this);
+			_windowDelegate = new WindowDelegate(this);
+			Delegate = _windowDelegate;
 			InitializeIconRegistry();
 			FormHandlers.Register();
 			NbtClipboardController.Initialize(new NbtClipboardControllerMac());
@@ -88,13 +92,19 @@ namespace NBTExplorer
 				NSApplication.SharedApplication.MainMenu.AutoEnablesItems = false;
 
 			_dataSource = new TreeDataSource();
+			_outlineDelegate = new MyDelegate(this);
 			_mainOutlineView.DataSource = _dataSource;
-			_mainOutlineView.Delegate = new MyDelegate(this);
+			_mainOutlineView.Delegate = _outlineDelegate;
+			_mainOutlineView.Appearance = NSAppearance.GetAppearance(NSAppearance.NameAqua);
+			_mainOutlineView.RowHeight = 22;
+			_mainOutlineView.IndentationPerLevel = 16;
+			_mainOutlineView.UsesAlternatingRowBackgroundColors = true;
 
-			string[] args = Environment.GetCommandLineArgs();
-			if (args.Length > 2) {
-				string[] paths = new string[args.Length - 1];
-				Array.Copy(args, 1, paths, 0, paths.Length);
+			string[] paths = NSProcessInfo.ProcessInfo.Arguments
+				.Skip(1)
+				.Where(path => !path.StartsWith("-psn_", StringComparison.Ordinal))
+				.ToArray();
+			if (paths.Length > 0) {
 				OpenPaths(paths);
 			}
 			else {
@@ -173,15 +183,14 @@ namespace NBTExplorer
 			{
 				ImageAndTextCell c = cell as ImageAndTextCell;
 				TreeDataNode node = item as TreeDataNode;
+				if (c == null || node == null)
+					return;
 
-			// Modern AppKit draws the cell's StringValue.  Setting only the
-			// legacy Title property leaves the unselected rows visually blank.
-			c.StringValue = node.CombinedName;
-			c.Title = node.CombinedName;
-			c.TextColor = NSColor.Black;
+				// Modern AppKit draws StringValue; Title alone leaves rows blank.
+				c.StringValue = node.CombinedName;
+				c.Title = node.CombinedName;
+				c.TextColor = NSColor.ControlText;
 				c.Image = _main._iconRegistry.Lookup(node.Data.GetType());
-				//c.StringValue = node.Name;
-				//throw new System.NotImplementedException ();
 			}
 		}
 
@@ -281,7 +290,7 @@ namespace NBTExplorer
 				opanel.DirectoryUrl = new NSUrl (_openFolderPath, true);
 
 			if (opanel.RunModal () == (nint)NSModalResponse.OK) {
-				_openFolderPath = opanel.DirectoryUrl.AbsoluteString;
+				_openFolderPath = opanel.DirectoryUrl.Path;
 				OpenPaths(new string[] { opanel.DirectoryUrl.Path });
 			}
 
@@ -361,11 +370,10 @@ namespace NBTExplorer
 				}
 			}
 
-			if (_dataSource.Nodes.Count > 0) {
-				_mainOutlineView.ExpandItem(_dataSource.Nodes[0]);
-			}
-
 			_mainOutlineView.ReloadData();
+
+			if (_dataSource.Nodes.Count > 0)
+				_mainOutlineView.ExpandItem(_dataSource.Nodes[0]);
 
 			UpdateUI();
 		}
